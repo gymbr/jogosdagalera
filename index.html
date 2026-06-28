@@ -1,289 +1,679 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogos da Galera</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg: #0a0a0c;
-            --card-bg: #121215;
-            --border: #1f1f24;
-            --border-hover: #3f3f46;
-            --text: #ffffff;
-            --text-muted: #71717a;
-            --accent: #3b82f6;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=360, initial-scale=1, maximum-scale=5, user-scalable=1" />
+  <title>Bloob.io | Jogue Grátis com Amigos | Multiplayer Sem Cadastro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+    :root {
+      --green:        #2ecc71;
+      --green-dark:   #27ae60;
+      --green-glow:   rgba(46, 204, 113, 0.18);
+      --bg:           #0f1923;
+      --bg-card:      #162230;
+      --bg-card-hov:  #1c2d3f;
+      --border:       rgba(255,255,255,0.07);
+      --text:         #e8edf2;
+      --text-muted:   #7a92a8;
+      --tag-bg:       rgba(46,204,113,0.13);
+      --radius-card:  14px;
+      --font:         'Nunito', sans-serif;
+    }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 0 1.5rem;
-        }
+    html { scroll-behavior: smooth; }
 
-        /* Navbar Minimalista */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 2rem 0;
-        }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 700;
-            text-decoration: none;
-            color: var(--text);
-            letter-spacing: -0.03em;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    /* ── NAVBAR ─────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #0c151e;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 56px;
+      gap: 16px;
+    }
 
-        .logo i {
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
 
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
+    .nav-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--green);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
 
-        .nav-links a:hover {
-            color: var(--text);
-        }
+    .nav-logo-text {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
 
-        /* Categorias / Filtros Estilo Bloob */
-        .header-section {
-            max-width: 1300px;
-            margin: 1rem auto 2.5rem auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+    .nav-logo-text span { color: var(--green); }
 
-        .categories {
-            display: flex;
-            gap: 0.5rem;
-        }
+    .nav-center {
+      flex: 1;
+      max-width: 380px;
+      position: relative;
+    }
 
-        .cat-btn {
-            background: var(--card-bg);
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
+    .nav-search {
+      width: 100%;
+      background: #1a2635;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 12px 7px 36px;
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
 
-        .cat-btn.active, .cat-btn:hover {
-            color: var(--text);
-            border-color: var(--border-hover);
-            background: #18181c;
-        }
+    .nav-search:focus { border-color: var(--green); }
+    .nav-search::placeholder { color: var(--text-muted); }
 
-        .tv-prompt {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .nav-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
 
-        .tv-prompt i {
-            color: #22c55e;
-        }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
 
-        /* Grid de Cards */
-        .grid {
-            max-width: 1300px;
-            margin: 0 auto 4rem auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1.25rem;
-        }
+    .nav-lang {
+      background: #1a2635;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 5px 10px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-family: var(--font);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            transition: border-color 0.2s, transform 0.2s;
-        }
+    /* ── HERO ────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 48px 24px 36px;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(46,204,113,0.12) 0%, transparent 70%);
+    }
 
-        .card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-        }
+    .hero h1 {
+      font-size: clamp(22px, 5vw, 34px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
 
-        .thumb {
-            width: 100%;
-            aspect-ratio: 16 / 10;
-            background: #18181c;
-            position: relative;
-            overflow: hidden;
-        }
+    .hero h1 span { color: var(--green); }
 
-        .thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.9;
-            transition: opacity 0.2s;
-        }
+    .hero p {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
 
-        .card:hover .thumb img {
-            opacity: 1;
-        }
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-        .info {
-            padding: 1rem;
-        }
+    .badge {
+      background: var(--tag-bg);
+      border: 1px solid rgba(46,204,113,0.3);
+      color: var(--green);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-        .title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            letter-spacing: -0.01em;
-        }
+    /* ── FILTERS ─────────────────────────────────────────── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filters::-webkit-scrollbar { display: none; }
 
-        .meta {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .filter-btn {
+      white-space: nowrap;
+      background: #162230;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 7px 15px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all .18s;
+    }
 
-        .players {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: #0f1923;
+    }
 
-        /* Footer */
-        footer {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 2rem 0;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+    /* ── SECTION LABEL ──────────────────────────────────── */
+    .section-label {
+      padding: 0 24px 14px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+    }
 
-        @media (max-width: 600px) {
-            .header-section { flex-direction: column; align-items: start; }
-            .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.8rem; }
-        }
-    </style>
+    /* ── GAME GRID ──────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      padding: 0 24px 40px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .18s, box-shadow .18s, border-color .18s;
+      display: block;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.4), 0 0 0 1px var(--green);
+      border-color: var(--green);
+    }
+
+    .card-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      background: #1a2635;
+    }
+
+    /* Fallback colorful thumbnail when no image */
+    .card-thumb-fallback {
+      width: 100%;
+      aspect-ratio: 16/9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .card-body {
+      padding: 12px 14px 14px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag {
+      background: var(--tag-bg);
+      border: 1px solid rgba(46,204,113,0.2);
+      color: var(--green);
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tag.gray {
+      background: rgba(122,146,168,0.1);
+      border-color: rgba(122,146,168,0.2);
+      color: var(--text-muted);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .footer-logo span { color: var(--green); }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      font-size: 13px;
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .footer-links a:hover { color: var(--green); }
+
+    .footer-copy {
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    /* ── ONLINE PULSE ────────────────────────────────────── */
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      animation: pulse 2s infinite;
+      margin-right: 5px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── PLAYERS ONLINE BAR ──────────────────────────────── */
+    .online-bar {
+      background: rgba(46,204,113,0.08);
+      border-top: 1px solid rgba(46,204,113,0.15);
+      border-bottom: 1px solid rgba(46,204,113,0.15);
+      padding: 8px 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .online-bar strong { color: var(--green); }
+
+    /* ── SEARCH HIGHLIGHT ────────────────────────────────── */
+    .card.hidden { display: none; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 14px 32px; }
+      .filters { padding: 0 14px 16px; }
+      .section-label { padding: 0 14px 12px; }
+      nav { padding: 0 14px; }
+      .hero { padding: 32px 14px 24px; }
+      .nav-center { display: none; }
+    }
+
+    @media (max-width: 380px) {
+      .grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .card-body { padding: 8px 10px 10px; }
+      .card-title { font-size: 13px; }
+    }
+  </style>
 </head>
 <body>
 
-    <nav>
-        <a href="#" class="logo">
-            <i class="fa-solid fa-dice"></i> Jogos da Galera
-        </a>
-        <div class="nav-links">
-            <a href="#">Sobre</a>
-        </div>
-    </nav>
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">🎮</div>
+    <span class="nav-logo-text">Bloo<span>b</span>.io</span>
+  </a>
 
-    <div class="header-section">
-        <div class="categories">
-            <button class="cat-btn active">Todos</button>
-            <button class="cat-btn">Tabuleiros</button>
-            <button class="cat-btn">Cartas</button>
-            <button class="cat-btn">Party</button>
-        </div>
-        <div class="tv-prompt">
-            <i class="fa-solid fa-tv"></i> Ideal para jogar na TV da sala
-        </div>
+  <div class="nav-center">
+    <span class="nav-search-icon">🔍</span>
+    <input class="nav-search" type="text" placeholder="Buscar jogo..." id="searchInput" />
+  </div>
+
+  <div class="nav-right">
+    <div class="nav-lang">🇧🇷 PT</div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Jogue <span>Grátis</span> com Amigos</h1>
+  <p>Jogos multiplayer no navegador, sem cadastro. Convide amigos, desconhecidos ou bots e jogue agora!</p>
+  <div class="hero-badges">
+    <span class="badge">✅ Sem Cadastro</span>
+    <span class="badge">🎮 Multiplayer</span>
+    <span class="badge">🤖 Bots Incluídos</span>
+    <span class="badge">🆓 100% Grátis</span>
+  </div>
+</div>
+
+<!-- ONLINE BAR -->
+<div class="online-bar">
+  <span class="online-dot"></span>
+  <strong id="onlineCount">847</strong> jogadores online agora
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <button class="filter-btn active" onclick="filterGames('todos', this)">Todos</button>
+  <button class="filter-btn" onclick="filterGames('palavras', this)">Palavras</button>
+  <button class="filter-btn" onclick="filterGames('sinuca', this)">Sinuca</button>
+  <button class="filter-btn" onclick="filterGames('tabuleiro', this)">Tabuleiro</button>
+  <button class="filter-btn" onclick="filterGames('acao', this)">Ação</button>
+  <button class="filter-btn" onclick="filterGames('quiz', this)">Quiz</button>
+  <button class="filter-btn" onclick="filterGames('dados', this)">Dados</button>
+</div>
+
+<!-- SECTION LABEL -->
+<div class="section-label">Todos os Jogos</div>
+
+<!-- GAME GRID -->
+<div class="grid" id="gameGrid">
+
+  <!-- Wordrace -->
+  <a class="card" href="https://bloob.io/pt/wordrace" target="_blank" data-category="palavras" data-name="wordrace corrida palavras">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#1a3a5c,#0d2137);">📝</div>
+    <div class="card-body">
+      <div class="card-title">Wordrace</div>
+      <div class="card-desc">Encontre palavras no grid de letras mais rápido que seus adversários.</div>
+      <div class="card-tags">
+        <span class="tag">Palavras</span>
+        <span class="tag gray">Até 8</span>
+      </div>
     </div>
+  </a>
 
-    <main class="grid">
+  <!-- Blomber -->
+  <a class="card" href="https://bloob.io/pt/blomber" target="_blank" data-category="acao" data-name="blomber bomba bomberman acao">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#3d1a00,#7a2800);">💣</div>
+    <div class="card-body">
+      <div class="card-title">Blomber</div>
+      <div class="card-desc">Plante bombas e elimine seus oponentes neste clássico do gênero.</div>
+      <div class="card-tags">
+        <span class="tag">Ação</span>
+        <span class="tag gray">Até 8</span>
+      </div>
+    </div>
+  </a>
 
-        <!-- Jogo 1 -->
-        <a href="#" class="card">
-            <div class="thumb">
-                <img src="https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?q=80&w=500" alt="Tabuleiro">
-            </div>
-            <div class="info">
-                <div class="title">Ludo da Galera</div>
-                <div class="meta">
-                    <span class="players"><i class="fa-solid fa-users"></i> 2-4 Jogadores</span>
-                    <span>Tabuleiros</span>
-                </div>
-            </div>
-        </a>
+  <!-- Batalha Naval -->
+  <a class="card" href="https://bloob.io/pt/battleship" target="_blank" data-category="tabuleiro" data-name="batalha naval tabuleiro battleship">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#001a3d,#002966);">🚢</div>
+    <div class="card-body">
+      <div class="card-title">Batalha Naval</div>
+      <div class="card-desc">Afunde a frota inimiga antes que o adversário destrua a sua.</div>
+      <div class="card-tags">
+        <span class="tag">Tabuleiro</span>
+        <span class="tag gray">2 jogadores</span>
+      </div>
+    </div>
+  </a>
 
-        <!-- Jogo 2 -->
-        <a href="#" class="card">
-            <div class="thumb">
-                <img src="https://images.unsplash.com/photo-1585504198199-20277593b94f?q=80&w=500" alt="Cartas">
-            </div>
-            <div class="info">
-                <div class="title">Duelo de Cartas</div>
-                <div class="meta">
-                    <span class="players"><i class="fa-solid fa-users"></i> 2 Jogadores</span>
-                    <span>Cartas</span>
-                </div>
-            </div>
-        </a>
+  <!-- 8 Ball Pool -->
+  <a class="card" href="https://bloob.io/pt/8ballpool" target="_blank" data-category="sinuca" data-name="sinuca 8 bolas bilhar pool">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#0a1f0a,#0d3b0d);">🎱</div>
+    <div class="card-body">
+      <div class="card-title">8 Ball Pool</div>
+      <div class="card-desc">O clássico bilhar de 8 bolas. Encaçape todas as suas antes do adversário.</div>
+      <div class="card-tags">
+        <span class="tag">Sinuca</span>
+        <span class="tag gray">2 jogadores</span>
+      </div>
+    </div>
+  </a>
 
-        <!-- Jogo 3 -->
-        <a href="#" class="card">
-            <div class="thumb">
-                <img src="https://images.unsplash.com/photo-1606167668584-78701c57f13d?q=80&w=500" alt="Party">
-            </div>
-            <div class="info">
-                <div class="title">Stop! Corporativo</div>
-                <div class="meta">
-                    <span class="players"><i class="fa-solid fa-users"></i> 2-10 Jogadores</span>
-                    <span>Party</span>
-                </div>
-            </div>
-        </a>
+  <!-- 9 Ball Pool -->
+  <a class="card" href="https://bloob.io/pt/9ballpool" target="_blank" data-category="sinuca" data-name="sinuca 9 bolas bilhar pool">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#1a0f00,#3d2500);">🟡</div>
+    <div class="card-body">
+      <div class="card-title">9 Ball Pool</div>
+      <div class="card-desc">Encaçape as bolas em ordem numérica e termine com a bola 9.</div>
+      <div class="card-tags">
+        <span class="tag">Sinuca</span>
+        <span class="tag gray">2 jogadores</span>
+      </div>
+    </div>
+  </a>
 
-        <!-- Jogo 4 -->
-        <a href="#" class="card">
-            <div class="thumb">
-                <img src="https://images.unsplash.com/photo-1566694271453-390536dd1f0d?q=80&w=500" alt="Xadrez">
-            </div>
-            <div class="info">
-                <div class="title">Xadrez Rápido</div>
-                <div class="meta">
-                    <span class="players"><i class="fa-solid fa-users"></i> 2 Jogadores</span>
-                    <span>Tabuleiros</span>
-                </div>
-            </div>
-        </a>
+  <!-- Cutthroat Pool -->
+  <a class="card" href="https://bloob.io/pt/cutthroatpool" target="_blank" data-category="sinuca" data-name="sinuca cutthroat bilhar pool 3 jogadores">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#0d002e,#1e0052);">🎯</div>
+    <div class="card-body">
+      <div class="card-title">Cutthroat Pool</div>
+      <div class="card-desc">Sinuca para 3 jogadores — proteja suas bolas enquanto encaçapa as dos outros.</div>
+      <div class="card-tags">
+        <span class="tag">Sinuca</span>
+        <span class="tag gray">3 jogadores</span>
+      </div>
+    </div>
+  </a>
 
-    </main>
+  <!-- Straight Pool -->
+  <a class="card" href="https://bloob.io/pt/straightpool" target="_blank" data-category="sinuca" data-name="straight pool sinuca bilhar pontos">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#001a0d,#003320);">🟢</div>
+    <div class="card-body">
+      <div class="card-title">Straight Pool</div>
+      <div class="card-desc">Marque o maior número de pontos encaçapando qualquer bola da mesa.</div>
+      <div class="card-tags">
+        <span class="tag">Sinuca</span>
+        <span class="tag gray">2 jogadores</span>
+      </div>
+    </div>
+  </a>
 
-    <footer>
-        &copy; 2026 Jogos da Galera. Feito para unir o pessoal.
-    </footer>
+  <!-- Damas -->
+  <a class="card" href="https://bloob.io/pt/checkers" target="_blank" data-category="tabuleiro" data-name="damas checkers tabuleiro clássico">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#1a0000,#3d0000);">⬛</div>
+    <div class="card-body">
+      <div class="card-title">Damas</div>
+      <div class="card-desc">O eterno jogo de tabuleiro. Capture todas as peças do adversário.</div>
+      <div class="card-tags">
+        <span class="tag">Tabuleiro</span>
+        <span class="tag gray">2 jogadores</span>
+      </div>
+    </div>
+  </a>
 
+  <!-- Damas Canadenses -->
+  <a class="card" href="https://bloob.io/pt/canadiancheckers" target="_blank" data-category="tabuleiro" data-name="damas canadenses checkers tabuleiro variante">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#1a0000,#330014);">🍁</div>
+    <div class="card-body">
+      <div class="card-title">Damas Canadenses</div>
+      <div class="card-desc">Variante em tabuleiro 12×12 com regras mais complexas e estratégicas.</div>
+      <div class="card-tags">
+        <span class="tag">Tabuleiro</span>
+        <span class="tag gray">2 jogadores</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Party Checkers -->
+  <a class="card" href="https://bloob.io/pt/partycheckers" target="_blank" data-category="tabuleiro" data-name="party checkers damas festa 4 jogadores">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#1a001a,#33004d);">🎉</div>
+    <div class="card-body">
+      <div class="card-title">Party Checkers</div>
+      <div class="card-desc">Damas para até 4 jogadores em um mesmo tabuleiro. Caos garantido!</div>
+      <div class="card-tags">
+        <span class="tag">Tabuleiro</span>
+        <span class="tag gray">Até 4</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Iate (Yacht) -->
+  <a class="card" href="https://bloob.io/pt/yacht" target="_blank" data-category="dados" data-name="iate yacht dados yatzy">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#001a2e,#003352);">🎲</div>
+    <div class="card-body">
+      <div class="card-title">Iate</div>
+      <div class="card-desc">Role os dados e forme combinações para acumular a maior pontuação.</div>
+      <div class="card-tags">
+        <span class="tag">Dados</span>
+        <span class="tag gray">Até 6</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Quiz Trivia Co-op -->
+  <a class="card" href="https://bloob.io/pt/trivia-coop" target="_blank" data-category="quiz" data-name="quiz trivia cooperativo perguntas co-op">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#0d1a00,#1a3300);">🧠</div>
+    <div class="card-body">
+      <div class="card-title">Quiz Trivia Co-op</div>
+      <div class="card-desc">Responda perguntas em equipe em tempo real. Até 16 jogadores juntos!</div>
+      <div class="card-tags">
+        <span class="tag">Quiz</span>
+        <span class="tag gray">Até 16</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- Wordbattle -->
+  <a class="card" href="https://bloob.io/pt/wordbattle" target="_blank" data-category="palavras" data-name="wordbattle batalha palavras word">
+    <div class="card-thumb-fallback" style="background:linear-gradient(135deg,#002233,#003d5c);">🔤</div>
+    <div class="card-body">
+      <div class="card-title">Wordbattle</div>
+      <div class="card-desc">Forme palavras e conquiste o maior território no tabuleiro de letras.</div>
+      <div class="card-tags">
+        <span class="tag">Palavras</span>
+        <span class="tag gray">Até 4</span>
+      </div>
+    </div>
+  </a>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Bloo<span>b</span>.io</div>
+  <div class="footer-links">
+    <a href="#">Sobre</a>
+    <a href="#">Blog</a>
+    <a href="#">Privacidade</a>
+    <a href="#">Termos</a>
+    <a href="#">Contato</a>
+  </div>
+  <div class="footer-copy">© 2019–2025 Bloob.io · Todos os direitos reservados</div>
+</footer>
+
+<script>
+  // ── Search ──────────────────────────────────────────────
+  const searchInput = document.getElementById('searchInput');
+  const cards = document.querySelectorAll('.card');
+
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    cards.forEach(card => {
+      const name = card.dataset.name || '';
+      card.classList.toggle('hidden', q.length > 0 && !name.includes(q));
+    });
+  });
+
+  // ── Filter ──────────────────────────────────────────────
+  let activeCategory = 'todos';
+
+  function filterGames(category, btn) {
+    activeCategory = category;
+
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const q = searchInput.value.toLowerCase().trim();
+
+    cards.forEach(card => {
+      const cat = card.dataset.category || '';
+      const name = card.dataset.name || '';
+      const catMatch = category === 'todos' || cat === category;
+      const searchMatch = q.length === 0 || name.includes(q);
+      card.classList.toggle('hidden', !(catMatch && searchMatch));
+    });
+  }
+
+  // ── Fake online counter ─────────────────────────────────
+  const counter = document.getElementById('onlineCount');
+  let count = 847;
+
+  setInterval(() => {
+    count += Math.floor(Math.random() * 11) - 5;
+    count = Math.max(600, Math.min(1200, count));
+    counter.textContent = count.toLocaleString('pt-BR');
+  }, 3500);
+</script>
 </body>
 </html>
