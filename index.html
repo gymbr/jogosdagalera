@@ -350,38 +350,10 @@
       font-size: 12px;
     }
 
-    /* ── ONLINE PULSE ────────────────────────────────────── */
-    .online-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--yellow);
-      display: inline-block;
-      animation: pulse 2s infinite;
-      margin-right: 5px;
-    }
-
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
-
-    /* ── PLAYERS ONLINE BAR ──────────────────────────────── */
-    .online-bar {
-      /* Alterado rgba(46,204,113,0.08) para rgba(241,196,15,0.08) */
-      background: rgba(241, 196, 15, 0.08);
-      /* Alterado rgba(46,204,113,0.15) para rgba(241,196,15,0.15) */
-      border-top: 1px solid rgba(241, 196, 15, 0.15);
-      border-bottom: 1px solid rgba(241, 196, 15, 0.15);
-      padding: 8px 24px;
-      font-size: 13px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .online-bar strong { color: var(--yellow); }
 
     /* ── SEARCH HIGHLIGHT ────────────────────────────────── */
     .card.hidden { display: none; }
@@ -409,7 +381,7 @@
 <nav>
   <a class="nav-logo" href="#">
     <div class="nav-logo-icon">🎮</div>
-    <span class="nav-logo-text">Bloo<span>b</span>.io</span>
+    <span class="nav-logo-text">Jogos<span>Da</span>Galera</span>
   </a>
 
   <div class="nav-center">
@@ -425,7 +397,7 @@
 <!-- HERO -->
 <div class="hero">
   <h1>Jogue <span>Grátis</span> com Amigos</h1>
-  <p>Jogos multiplayer no navegador, sem cadastro. Convide amigos, desconhecidos ou bots e jogue agora!</p>
+  <p>Jogos multiplayer no navegador, sem cadastro. Convide amigos e jogue agora!</p>
   <div class="hero-badges">
     <span class="badge">✅ Sem Cadastro</span>
     <span class="badge">🎮 Multiplayer</span>
@@ -433,13 +405,7 @@
     <span class="badge">🆓 100% Grátis</span>
   </div>
 </div>
-
-<!-- ONLINE BAR -->
-<div class="online-bar">
-  <span class="online-dot"></span>
-  <strong id="onlineCount">847</strong> jogadores online agora
-</div>
-
+  
 <!-- FILTERS -->
 <div class="filters">
   <button class="filter-btn active" onclick="filterGames('todos', this)">Todos</button>
@@ -630,7 +596,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Bloo<span>b</span>.io</div>
+  <div class="footer-logo">Jogos<span>Da</span>Galera</div>
   <div class="footer-links">
     <a href="#">Sobre</a>
     <a href="#">Blog</a>
@@ -638,7 +604,7 @@
     <a href="#">Termos</a>
     <a href="#">Contato</a>
   </div>
-  <div class="footer-copy">© 2019–2025 Bloob.io · Todos os direitos reservados</div>
+  <div class="footer-copy">© 2016–2026 Jogos da Galera · Todos os direitos reservados</div>
 </footer>
 
 <script>
@@ -672,17 +638,7 @@
       const searchMatch = q.length === 0 || name.includes(q);
       card.classList.toggle('hidden', !(catMatch && searchMatch));
     });
-  }
-
-  // ── Fake online counter ─────────────────────────────────
-  const counter = document.getElementById('onlineCount');
-  let count = 847;
-
-  setInterval(() => {
-    count += Math.floor(Math.random() * 11) - 5;
-    count = Math.max(600, Math.min(1200, count));
-    counter.textContent = count.toLocaleString('pt-BR');
-  }, 3500);
+  }  
 </script>
 </body>
 </html>
