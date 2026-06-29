@@ -6,7 +6,7 @@ export async function onRequest(context) {
   const fetchSite = request.headers.get('sec-fetch-site');
   
   if (fetchMode === 'navigate' || (fetchSite && fetchSite !== 'same-origin')) {
-    return new Response(JSON.stringify({ error: 'Acesso direto não permitido.' }), {
+    return new Response(JSON.stringify({ error: 'Acesso não permitido.' }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' }
     });
