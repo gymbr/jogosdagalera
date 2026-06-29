@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=360, initial-scale=1, maximum-scale=5, user-scalable=1" />
   <title>Jogos da Galera</title>
   <link rel="icon" type="image/png" href="https://jogosdagalera.pages.dev/logowpp.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f1c40f">
   <meta property="og:title" content="Jogos da Galera">
   <meta property="og:description" content="Seus jogos favoritos">
   <meta property="og:image" content="https://jogosdagalera.pages.dev/logowpp.png">
@@ -571,7 +573,16 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', loadGames);
+  document.addEventListener('DOMContentLoaded', () => {
+    loadGames();
+    
+    // Registra o Service Worker para habilitar o PWA (instalação no Android)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('Service Worker não registrado (verifique se sw.js existe):', err.message);
+      });
+    }
+  });
 
   // ---------- Lógica de Adicionar à Tela Inicial (PWA) ----------
   let deferredPrompt;
