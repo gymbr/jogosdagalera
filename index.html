@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=360, initial-scale=1, maximum-scale=5, user-scalable=1" />
-  <title>Jogos da Galera2</title>
+  <title>Jogos da Galera</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
@@ -437,14 +437,13 @@
 
   async function loadGames() {
     try {
-      // Faz requisição interna para a nossa Cloudflare Function segura
       const response = await fetch('/api/games');
-      if (!response.ok) throw new Error('Falha ao acessar a API interna');
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({ error: `Status ${response.status}` }));
+        throw new Error(errData.error);
+      }
       
-      const contents = await response.json();
-      
-      const folders = contents.filter(item => item.type === 'dir' && !item.name.startsWith('.') && !item.name.startsWith('_'));
-      
+      const folders = await response.json();
       gameGrid.innerHTML = '';
 
       for (const folder of folders) {
@@ -494,7 +493,7 @@
 
     } catch (error) {
       console.error(error);
-      gameGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 20px;">Não foi possível carregar os jogos.</p>';
+      gameGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ff4a4a; padding: 20px;">Erro: ${error.message}</p>`;
     }
   }
 
