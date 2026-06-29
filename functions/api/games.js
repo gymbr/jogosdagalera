@@ -33,8 +33,9 @@ export async function onRequest(context) {
     
     const data = await response.json();
     
+    // Filtra removendo arquivos, pastas ocultas e a pasta 'functions'
     const folders = data
-      .filter(item => item.type === 'dir' && !item.name.startsWith('.') && !item.name.startsWith('_'))
+      .filter(item => item.type === 'dir' && !item.name.startsWith('.') && !item.name.startsWith('_') && item.name !== 'functions')
       .map(item => ({ name: item.name }));
 
     return new Response(JSON.stringify(folders), {
