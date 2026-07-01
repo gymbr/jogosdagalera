@@ -484,7 +484,6 @@
   </div>
 </nav>
 
-<!-- Nova Seção de Geração de Sala Dinâmica -->
 <div class="topbar-room">
   <div class="topbar-room-container">
     <div class="topbar-room-flex">
@@ -760,12 +759,6 @@
   }
 
   /* ── CONTAGEM DE JOGADORES ONLINE NA SALA (PeerJS) ─────── */
-  // Mesma lógica usada em caraacara.html: cada navegador é um peer.
-  // O primeiro a abrir a sala vira o "host" (dono do ID fixo da sala) e
-  // conta as conexões dos demais; os outros entram como "guests" e
-  // recebem a contagem atualizada em tempo real via broadcast do host.
-  // Se alguém atualizar a página (host ou guest), todos reconectam
-  // automaticamente e a contagem volta a ficar correta sozinha.
   let presencePeer = null;
   let isPresenceHost = false;
   let hostConnections = [];
@@ -782,15 +775,21 @@
   }
 
   function broadcastCount() {
+    // Filtra limpando as conexões antigas ou instáveis antes de contar
+    hostConnections = hostConnections.filter(c => c.open);
     const count = hostConnections.length + 1;
     updateOnlineCount(count);
     hostConnections.forEach(c => {
-      if (c.open) c.send({ type: 'presence-count', count });
+      if (c.open) {
+        try {
+          c.send({ type: 'presence-count', count });
+        } catch (e) {}
+      }
     });
   }
 
-  function scheduleReconnect(code, delay = 1000) {
-    if (reconnectTimer) return; // já existe uma tentativa agendada
+  function scheduleReconnect(code, delay = 2000) {
+    if (reconnectTimer) return;
     reconnectTimer = setTimeout(() => {
       reconnectTimer = null;
       destroyPresencePeer();
@@ -799,6 +798,8 @@
   }
 
   function initPresenceHost(code) {
+    if (presencePeer) destroyPresencePeer();
+
     presencePeer = new Peer(presenceHostId(code));
 
     presencePeer.on('open', () => {
@@ -808,9 +809,12 @@
     });
 
     presencePeer.on('connection', (conn) => {
-      hostConnections.push(conn);
-
-      conn.on('open', () => broadcastCount());
+      conn.on('open', () => {
+        if (!hostConnections.includes(conn)) {
+          hostConnections.push(conn);
+        }
+        broadcastCount();
+      });
 
       conn.on('close', () => {
         hostConnections = hostConnections.filter(c => c !== conn);
@@ -824,26 +828,27 @@
     });
 
     presencePeer.on('disconnected', () => {
-      // Perdeu a conexão com o servidor de sinalização, mas o peer ainda existe: tenta reconectar
-      try { presencePeer.reconnect(); } catch (e) { scheduleReconnect(code); }
+      if (isPresenceHost) scheduleReconnect(code);
     });
 
     presencePeer.on('close', () => {
-      scheduleReconnect(code);
+      if (isPresenceHost) scheduleReconnect(code);
     });
 
     presencePeer.on('error', (err) => {
       if (err.type === 'unavailable-id') {
-        // Já existe um host para essa sala: entra como convidado
+        // Remove os ouvintes deste peer problemático antes de instanciar como Guest
+        destroyPresencePeer();
         initPresenceGuest(code);
       } else {
-        scheduleReconnect(code);
+        if (isPresenceHost) scheduleReconnect(code);
       }
     });
   }
 
   function initPresenceGuest(code) {
-    if (presencePeer) { try { presencePeer.destroy(); } catch (e) {} }
+    if (presencePeer) destroyPresencePeer();
+
     isPresenceHost = false;
     presencePeer = new Peer();
 
@@ -857,32 +862,49 @@
       });
 
       guestConn.on('close', () => {
-        // O host sumiu (ex: atualizou a página): tenta reconectar/assumir a sala automaticamente
-        scheduleReconnect(code, 500);
+        scheduleReconnect(code, 1500);
       });
 
       guestConn.on('error', () => {
-        scheduleReconnect(code, 500);
+        scheduleReconnect(code, 1500);
       });
     });
 
     presencePeer.on('disconnected', () => {
-      try { presencePeer.reconnect(); } catch (e) { scheduleReconnect(code, 500); }
+      if (!isPresenceHost) scheduleReconnect(code, 1500);
     });
 
-    presencePeer.on('error', () => {
-      // Host indisponível (ex: acabou de sair): tenta assumir a sala
-      scheduleReconnect(code, 500);
+    presencePeer.on('close', () => {
+      if (!isPresenceHost) scheduleReconnect(code, 1500);
+    });
+
+    presencePeer.on('error', (err) => {
+      if (!isPresenceHost) scheduleReconnect(code, 1500);
     });
   }
 
   function destroyPresencePeer() {
     if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
-    if (guestConn) { try { guestConn.close(); } catch (e) {} }
-    if (presencePeer) { try { presencePeer.destroy(); } catch (e) {} }
-    presencePeer = null;
-    guestConn = null;
-    hostConnections = [];
+    if (guestConn) { 
+      try { guestConn.close(); } catch (e) {} 
+      guestConn = null;
+    }
+    if (hostConnections && hostConnections.length > 0) {
+      hostConnections.forEach(c => { try { c.close(); } catch (e) {} });
+      hostConnections = [];
+    }
+    if (presencePeer) {
+      try {
+        // Desativa explicitamente os ouvintes de evento para estancar o loop infinito de WebSockets
+        presencePeer.off('open');
+        presencePeer.off('connection');
+        presencePeer.off('disconnected');
+        presencePeer.off('close');
+        presencePeer.off('error');
+        presencePeer.destroy();
+      } catch (e) {}
+      presencePeer = null;
+    }
     isPresenceHost = false;
   }
 
