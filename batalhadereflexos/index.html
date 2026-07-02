@@ -3,26 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batalha de Reflexos P2P</title>
+    <title>Batalha de Reflexos</title>
+    <link rel="icon" type="image/png" href="https://jogosdagalera.pages.dev/logowpp.png">
+
+    <meta property="og:title" content="Jogue Batalha de Reflexos Online">
+    <meta property="og:image" content="https://jogosdagalera.pages.dev/logowpp.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <style>
+        /* Estilos herdados e isolados do Cabeçalho do Home para evitar quebras */
+        #home-navbar-container {
+            width: 100%;
+            height: 56px;
+            background: #0c151e;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px 0 8px;
+            gap: 32px;
+            box-sizing: border-box;
+        }
+        #home-navbar-container .nav-logo { text-decoration: none; color: inherit; display: block; margin-left: 0; }
+        #home-navbar-container .logo-badge {
+            width: 200px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-shrink: 0;
+        }
+        #home-navbar-container .logo-badge img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+            object-position: left;
+            display: block;
+        }
+        #home-navbar-container .nav-lang {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #1a2635;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 7px;
+            padding: 5px 10px;
+            color: #7a92a8;
+            font-size: 13px;
+            font-family: 'Nunito', sans-serif;
+            line-height: normal;
+            cursor: pointer;
+        }
+        #home-navbar-container .nav-lang:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+        @media (max-width: 560px) {
+            #home-navbar-container { padding: 0 14px 0 8px; gap: 10px; }
+            #home-navbar-container .logo-badge {
+                width: 200px;
+                height: 40px;
+                justify-content: flex-start;
+            }
+        }
+
+        /* Seção do Código da Sala — copiada exatamente do index.html (mesma posição, valores, tamanhos, fontes e margens) */
+        .topbar-room {
+            background: #1e293b;
+            padding: 10px;
+            border-bottom: 4px solid #334155;
+            max-width: 100%;
+            overflow: hidden;
+            position: sticky;
+            top: 56px;
+            z-index: 99;
+        }
+
+        .topbar-room-container {
+            max-width: 448px;
+            margin: 0 auto;
+            padding: 0 4px;
+        }
+
+        .topbar-room-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-room-logo {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .topbar-room-logo img {
+            width: 80px;
+            height: 30px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 6px;
+        }
+
+        .topbar-room-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-family: monospace;
+            font-size: 11px;
+            line-height: normal;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        .topbar-room-id {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .topbar-room-online {
+            font-size: 10px;
+            color: #34d399;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .online-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #34d399;
+            margin-right: 3px;
+            vertical-align: middle;
+            animation: online-dot-pulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes online-dot-pulse {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+            }
+            50% {
+                opacity: 0.55;
+                box-shadow: 0 0 0 4px rgba(52, 211, 153, 0);
+            }
+        }
+
+        .btn-room {
+            background: #334155;
+            color: #fff;
+            border: none;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            line-height: normal;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-room-share {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        .btn-room-share:hover {
+            background: #4f46e5;
+        }
+
+        .btn-room-leave {
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .btn-room-leave:hover {
+            background: #dc2626;
+        }
+    </style>
 </head>
 <body class="bg-slate-900 text-white font-sans min-h-screen flex flex-col justify-between select-none">
 
-    <div id="screen-tv" class="hidden flex-grow flex flex-col justify-between p-8 h-screen w-full max-w-5xl mx-auto">
+    <div class="sticky top-0 z-50 w-full flex flex-col shadow-md">
+        <nav id="home-navbar-container">
+            <a class="nav-logo" href="/">
+                <div class="logo-badge">
+                    <img src="https://jogosdagalera.pages.dev/logo3.png" alt="Jogos da Galera">
+                </div>
+            </a>
+            <div>
+                <a class="nav-lang" href="/">Sair</a>
+            </div>
+        </nav>
+
+        <header id="topbar" class="topbar-room">
+            <div class="topbar-room-container">
+                <div class="topbar-room-flex">
+                    <div class="topbar-room-logo">
+                        <img src="logo.png" alt="Batalha de Reflexos">
+                    </div>
+                    <div class="topbar-room-details">
+                        <span>Sala: <strong id="topbar-room-id" class="topbar-room-id">...</strong> <span class="topbar-room-online">(<span class="online-dot"></span><span id="topbar-online-count">1</span> online)</span></span>
+                        <button onclick="copyLink()" class="btn-room btn-room-share">📋 Compartilhar</button>
+                    </div>
+                    <button id="btn-leave" onclick="leaveRoom()" class="btn-room btn-room-leave">🚪 Trocar Sala</button>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <div id="screen-tv" class="hidden flex-grow flex flex-col justify-between p-8 w-full max-w-5xl mx-auto">
         <div class="flex justify-between items-center border-b-2 border-slate-700 pb-4">
             <div>
                 <h1 class="text-4xl font-black tracking-wider text-rose-500">⚡ BATALHA DE REFLEXOS</h1>
                 <p class="text-slate-400 text-sm mt-1">Abra o link nos telemóveis para conectar</p>
             </div>
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 text-right">
-                <span class="text-xs text-slate-400 font-mono block">SALA</span>
-                <span id="tv-room-code" class="text-3xl font-black text-indigo-400 tracking-widest">...</span>
-            </div>
         </div>
 
         <div class="flex-grow flex flex-col items-center justify-center my-6">
-            
+
             <div id="tv-lobby" class="text-center space-y-6">
                 <h2 class="text-3xl font-bold animate-pulse text-amber-400">Aguardando Jogadores...</h2>
                 <div class="flex justify-center space-x-12">
@@ -54,17 +260,13 @@
         </div>
     </div>
 
-    <div id="screen-player" class="hidden flex-grow flex flex-col justify-between p-4 max-w-md mx-auto w-full h-screen">
-        <header class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex justify-between items-center">
-            <span id="player-tag" class="text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-slate-700 text-slate-400">Conectando...</span>
-            <span id="player-score" class="font-black font-mono text-amber-400 text-sm">0 pts</span>
-        </header>
-
+    <div id="screen-player" class="hidden flex-grow flex flex-col justify-between p-4 max-w-md mx-auto w-full">
         <div class="flex-grow flex flex-col items-center justify-center my-4 w-full">
             <div id="player-wait" class="text-center space-y-2">
                 <span class="text-4xl block animate-pulse">⏳</span>
                 <h2 id="player-wait-title" class="text-lg font-bold">Olhe para a TV</h2>
                 <p class="text-xs text-slate-400 px-6">Os botões vão ativar assim que o sinal for dado no ecrã grande!</p>
+                <span id="player-tag" class="inline-block mt-2 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-slate-700 text-slate-400">Conectando...</span>
             </div>
 
             <div id="player-gamepad" class="w-full h-full hidden grid grid-cols-2 grid-rows-2 gap-3 py-2">
@@ -74,6 +276,10 @@
                 <button onclick="pressColor('YELLOW')" class="bg-amber-500 active:scale-95 border-b-8 border-amber-700 rounded-2xl transition text-white font-black text-xl">AMARELO</button>
             </div>
         </div>
+
+        <footer class="text-center text-[11px] text-slate-500 py-2">
+            <span id="player-score" class="font-black font-mono text-amber-400">0 pts</span>
+        </footer>
     </div>
 
     <script>
@@ -81,6 +287,12 @@
         let players = [], scores = { p1: 0, p2: 0 };
         let currentTargetColor = '', roundActive = false, canTap = false;
         let pRole = 0; // 1 ou 2 para os telemóveis
+
+        // Peer separado, dedicado apenas à contagem de jogadores online na sala (idêntico ao index.html/caraacara.html)
+        let presencePeer = null;
+        let hostConnections = [];
+        let guestConn = null;
+        let reconnectTimer = null;
 
         const colors = ['RED', 'BLUE', 'GREEN', 'YELLOW'];
         const colorClasses = {
@@ -90,19 +302,251 @@
             YELLOW: 'bg-amber-500 border-amber-300'
         };
 
+        /* ── NAVBAR + SEÇÃO DE SALA SINCRONIZADAS COM O HOME (idêntico ao caraacara.html) ─── */
+        async function fetchHomeNavbar() {
+            try {
+                const response = await fetch('../index.html');
+                if (response.ok) {
+                    const htmlText = await response.text();
+                    const parser = new DOMParser();
+                    const parsedDoc = parser.parseFromString(htmlText, 'text/html');
+                    const targetNav = parsedDoc.querySelector('nav');
+                    if (targetNav) {
+                        document.getElementById('home-navbar-container').innerHTML = targetNav.innerHTML;
+
+                        const navLangLink = document.querySelector('#home-navbar-container .nav-lang');
+                        if (navLangLink) {
+                            navLangLink.textContent = 'Sair';
+                        }
+                    }
+                    syncRoomSectionFromHome(htmlText, parsedDoc);
+                }
+            } catch (error) {
+                console.error("Falha ao sincronizar o cabeçalho do Home automaticamente:", error);
+            }
+        }
+
+        function syncRoomSectionFromHome(rawHtml, parsedDoc) {
+            try {
+                const homeRoomBlock = parsedDoc.querySelector('.topbar-room');
+                if (homeRoomBlock) {
+                    const container = homeRoomBlock.querySelector('.topbar-room-container') || homeRoomBlock;
+                    const currentOnline = document.getElementById('topbar-online-count');
+                    const onlineCount = currentOnline ? currentOnline.innerText : '1';
+
+                    const topbar = document.getElementById('topbar');
+                    topbar.innerHTML = container.outerHTML;
+
+                    const idEl = document.getElementById('topbar-room-id');
+                    if (idEl) idEl.innerText = roomCode || '...';
+                    const onlineEl = document.getElementById('topbar-online-count');
+                    if (onlineEl) onlineEl.innerText = onlineCount;
+
+                    const roomLogoImg = topbar.querySelector('.topbar-room-logo img');
+                    if (roomLogoImg) {
+                        roomLogoImg.src = 'logo.png';
+                        roomLogoImg.alt = 'Batalha de Reflexos';
+                    }
+                }
+
+                const styleTag = parsedDoc.querySelector('style');
+                if (!styleTag) return;
+                const cssText = styleTag.innerHTML;
+
+                const blocks = extractTopLevelCssBlocks(cssText);
+                const relevant = blocks.filter(b =>
+                    /^\.topbar-room/.test(b.selector) ||
+                    /^\.btn-room/.test(b.selector) ||
+                    /^\.online-dot/.test(b.selector) ||
+                    /^@keyframes\s+online-dot-pulse/.test(b.selector)
+                );
+
+                let syncedCss = '';
+                const rootBlock = blocks.find(b => b.selector === ':root');
+                if (rootBlock) {
+                    const vars = rootBlock.full.match(/--(?:yellow|font)[^:;]*:\s*[^;]+;/g);
+                    if (vars) syncedCss += ':root{' + vars.join('') + '}\n';
+                }
+                relevant.forEach(b => { syncedCss += b.full + '\n'; });
+
+                if (syncedCss) {
+                    let styleEl = document.getElementById('synced-room-style');
+                    if (!styleEl) {
+                        styleEl = document.createElement('style');
+                        styleEl.id = 'synced-room-style';
+                        document.head.appendChild(styleEl);
+                    }
+                    styleEl.textContent = syncedCss;
+                }
+            } catch (error) {
+                console.error("Falha ao sincronizar a seção de sala (usando layout fixo de fallback):", error);
+            }
+        }
+
+        function extractTopLevelCssBlocks(css) {
+            const blocks = [];
+            let i = 0;
+            while (i < css.length) {
+                const braceIndex = css.indexOf('{', i);
+                if (braceIndex === -1) break;
+                const selector = css.slice(i, braceIndex).trim().replace(/\/\*[\s\S]*?\*\//g, '').trim();
+                let depth = 1, j = braceIndex + 1;
+                while (depth > 0 && j < css.length) {
+                    if (css[j] === '{') depth++;
+                    else if (css[j] === '}') depth--;
+                    j++;
+                }
+                const body = css.slice(braceIndex, j);
+                if (selector) blocks.push({ selector, full: selector + ' ' + body });
+                i = j;
+            }
+            return blocks;
+        }
+
+        /* ── CONTAGEM DE JOGADORES ONLINE NA SALA (idêntico ao index.html/caraacara.html) ─── */
+        function presenceHostId(code) {
+            return 'jdg-home-' + code;
+        }
+
+        function updateOnlineCount(n) {
+            const el = document.getElementById('topbar-online-count');
+            if (el) el.innerText = n;
+        }
+
+        function broadcastCount() {
+            hostConnections = hostConnections.filter(c => c.open);
+            const count = hostConnections.length + 1;
+            updateOnlineCount(count);
+            hostConnections.forEach(c => {
+                if (c.open) {
+                    try { c.send({ type: 'presence-count', count }); } catch (e) {}
+                }
+            });
+        }
+
+        function scheduleReconnect(code, delay = 2000) {
+            if (reconnectTimer) return;
+            reconnectTimer = setTimeout(() => {
+                reconnectTimer = null;
+                destroyPresencePeer();
+                if (isTV) {
+                    initPresenceHost(code);
+                } else {
+                    initPresenceGuest(code);
+                }
+            }, delay);
+        }
+
+        function initPresenceHost(code) {
+            if (presencePeer) destroyPresencePeer();
+            presencePeer = new Peer(presenceHostId(code));
+
+            presencePeer.on('open', () => {
+                hostConnections = [];
+                updateOnlineCount(1);
+            });
+
+            presencePeer.on('connection', (conn2) => {
+                conn2.on('open', () => {
+                    if (!hostConnections.includes(conn2)) hostConnections.push(conn2);
+                    broadcastCount();
+                });
+                conn2.on('close', () => {
+                    hostConnections = hostConnections.filter(c => c !== conn2);
+                    broadcastCount();
+                });
+                conn2.on('error', () => {
+                    hostConnections = hostConnections.filter(c => c !== conn2);
+                    broadcastCount();
+                });
+            });
+
+            presencePeer.on('disconnected', () => scheduleReconnect(code));
+            presencePeer.on('close', () => scheduleReconnect(code));
+            presencePeer.on('error', () => scheduleReconnect(code));
+        }
+
+        function initPresenceGuest(code) {
+            if (presencePeer) destroyPresencePeer();
+            presencePeer = new Peer();
+
+            presencePeer.on('open', () => {
+                guestConn = presencePeer.connect(presenceHostId(code));
+
+                guestConn.on('open', () => {});
+                guestConn.on('data', (data) => {
+                    if (data && data.type === 'presence-count') updateOnlineCount(data.count);
+                });
+                guestConn.on('close', () => scheduleReconnect(code, 1500));
+                guestConn.on('error', () => scheduleReconnect(code, 1500));
+            });
+
+            presencePeer.on('disconnected', () => scheduleReconnect(code, 1500));
+            presencePeer.on('close', () => scheduleReconnect(code, 1500));
+            presencePeer.on('error', () => scheduleReconnect(code, 1500));
+        }
+
+        function destroyPresencePeer() {
+            if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+            if (guestConn) { try { guestConn.close(); } catch (e) {} guestConn = null; }
+            if (hostConnections.length > 0) {
+                hostConnections.forEach(c => { try { c.close(); } catch (e) {} });
+                hostConnections = [];
+            }
+            if (presencePeer) {
+                try {
+                    presencePeer.off('open');
+                    presencePeer.off('connection');
+                    presencePeer.off('disconnected');
+                    presencePeer.off('close');
+                    presencePeer.off('error');
+                    presencePeer.destroy();
+                } catch (e) {}
+                presencePeer = null;
+            }
+        }
+
+        /* ── SALA: reaproveita o código já gerado pelo hub (index.html) ─── */
         const urlParams = new URLSearchParams(window.location.search);
         roomCode = urlParams.get('room');
 
         if (!roomCode) {
             isTV = true;
-            roomCode = 'TAP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+            // Sem código na URL: reaproveita o código de sala já gerado pelo hub,
+            // ao invés de criar um código totalmente novo só para a Batalha.
+            roomCode = localStorage.getItem('jdg_room_code');
+            if (!roomCode) {
+                roomCode = 'TAP-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+            }
+            localStorage.setItem('jdg_room_code', roomCode);
+            localStorage.setItem('jdg_hosted_room', roomCode);
+
             document.getElementById('screen-tv').classList.remove('hidden');
-            document.getElementById('tv-room-code').innerText = roomCode;
+            document.getElementById('topbar-room-id').innerText = roomCode;
+
+            fetchHomeNavbar();
             initTV();
+            initPresenceHost(roomCode);
         } else {
             isTV = false;
+            // Mantém o código de sala sincronizado com o hub, para o caso de o
+            // jogador ter chegado direto por um link (sem passar pelo index.html antes).
+            localStorage.setItem('jdg_room_code', roomCode);
+
             document.getElementById('screen-player').classList.remove('hidden');
+            document.getElementById('topbar-room-id').innerText = roomCode;
+
+            fetchHomeNavbar();
             initPlayer(roomCode);
+            initPresenceGuest(roomCode);
+        }
+
+        /* ── SAIR / TROCAR SALA ─── */
+        function leaveRoom() {
+            if (conn) conn.close();
+            if (peer) peer.destroy();
+            destroyPresencePeer();
+            window.location.href = window.location.origin + '/';
         }
 
         // --- ENGINE DA TV (HOST) ---
@@ -143,10 +587,10 @@
             canTap = false;
             document.getElementById('tv-results').classList.add('hidden');
             document.getElementById('tv-gameplay').classList.remove('hidden');
-            
+
             const targetBox = document.getElementById('tv-target-box');
             const promptText = document.getElementById('tv-prompt-text');
-            
+
             targetBox.className = "w-full max-w-2xl mx-auto h-64 rounded-3xl flex items-center justify-center border-4 border-slate-700 shadow-2xl bg-slate-800";
             promptText.innerText = "Preparar...";
             players.forEach(p => p.send({ type: 'LOCK' }));
@@ -156,17 +600,17 @@
                 if (!roundActive) return;
                 currentTargetColor = colors[Math.floor(Math.random() * colors.length)];
                 canTap = true;
-                
+
                 targetBox.className = `w-full max-w-2xl mx-auto h-64 rounded-3xl flex items-center justify-center border-4 shadow-2xl transition-all duration-100 ${colorClasses[currentTargetColor]}`;
                 promptText.innerText = `CLICA EM: ${currentTargetColor}`;
-                
+
                 players.forEach(p => p.send({ type: 'UNLOCK' }));
             }, 2000 + Math.random() * 3000);
         }
 
         function handlePlayerTap(playerNum, color) {
             if (!canTap) return; // Penalização se clicar antes do tempo (Fake start)
-            
+
             roundActive = false;
             canTap = false;
 
@@ -184,7 +628,7 @@
 
             document.getElementById('tv-score-p1').innerText = scores.p1;
             document.getElementById('tv-score-p2').innerText = scores.p2;
-            
+
             if (players[0]) players[0].send({ type: 'SYNC_SCORE', score: scores.p1 });
             if (players[1]) players[1].send({ type: 'SYNC_SCORE', score: scores.p2 });
 
@@ -210,7 +654,7 @@
                         pRole = data.role;
                         const tag = document.getElementById('player-tag');
                         tag.innerText = `JOGADOR ${pRole}`;
-                        tag.className = pRole === 1 ? "text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-red-600 text-white shadow" : "text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-blue-600 text-white shadow";
+                        tag.className = pRole === 1 ? "inline-block mt-2 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-red-600 text-white shadow" : "inline-block mt-2 text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-full bg-blue-600 text-white shadow";
                     } else if (data.type === 'START' || data.type === 'LOCK') {
                         document.getElementById('player-wait').classList.remove('hidden');
                         document.getElementById('player-gamepad').classList.add('hidden');
@@ -244,7 +688,11 @@
             navigator.clipboard.writeText(shareLink).then(() => alert('Link copiado! Envie para os comandos.'));
         }
 
-        window.addEventListener('beforeunload', () => { if (conn) conn.close(); if (peer) peer.destroy(); });
+        window.addEventListener('beforeunload', () => {
+            if (conn) conn.close();
+            if (peer) peer.destroy();
+            destroyPresencePeer();
+        });
     </script>
 </body>
 </html>
